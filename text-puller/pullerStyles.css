@@ -1,0 +1,67 @@
+#selectionCover{
+    position: fixed;
+    inset: 0;
+    z-index: 1000000;
+    cursor: crosshair;
+}
+
+#puller-selection-box {
+    position: fixed;
+    display: block;
+    z-index: 1000000;
+    border: 1px dotted #ff825c;
+    box-shadow: 0 0 0 300vw rgba(0, 0, 0, 0.1);
+}
+
+#pullerNotification{
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 20px;
+    z-index: 100000;
+    font-size: 14px;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 5px 15px 5px 5px;
+    border-radius: 4px;
+    opacity: 0;
+    bottom: -50px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    animation: pulerNotificationSlideInOut 1.6s ease-in-out;
+    background: rgba(19, 23, 38, 0.8);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+}
+
+#pullerNotification > img{
+    width : 48px;
+    height: 48px;
+    display: inline-block;
+    margin-right: 10px;
+    filter: none;
+    opacity: 1;
+    visibility: visible;
+    border: none;
+    outline: none;
+}
+
+#pullerNotification > .notification-text-holder h2{
+    margin: 0;
+    font-size: 18px;
+    line-height: 18px;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: normal;
+}
+#pullerNotification > .notification-text-holder span{
+    font-size: 12px;
+    color: #928f8f;
+    line-height: 14px;
+}
+
+@keyframes pulerNotificationSlideInOut {
+    0% , 100%{ opacity: 0; bottom: -50px;}
+    25% , 75%{ opacity: 1; bottom: 20px;}
+}
