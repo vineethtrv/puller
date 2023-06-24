@@ -1,3 +1,15 @@
+:root{
+    --stPanleBg: #f0eeee;
+    --stPanleText: #4a4a4a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --stPanleBg: rgb(19, 23, 38);
+        --stPanleText: #FFF;
+    }
+}
+
 #selectionCover{
     position: fixed;
     inset: 0;
@@ -5,15 +17,15 @@
     cursor: crosshair;
 }
 
-#puller-selection-box {
+#snapText-selection-box {
     position: fixed;
     display: block;
     z-index: 1000000;
-    border: 1px dotted #ff825c;
+    border: 1px dotted #00aeff;
     box-shadow: 0 0 0 300vw rgba(0, 0, 0, 0.1);
 }
 
-#pullerNotification{
+#snapTextNotification{
     position: fixed;
     display: flex;
     align-items: center;
@@ -21,23 +33,22 @@
     right: 20px;
     z-index: 100000;
     font-size: 14px;
-    color: #fff;
     font-family: Arial, Helvetica, sans-serif;
-    padding: 5px 15px 5px 5px;
-    border-radius: 4px;
     opacity: 0;
     bottom: -50px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
     animation: pulerNotificationSlideInOut 1.6s ease-in-out;
-    background: rgba(19, 23, 38, 0.8);
+    background: var(--stPanleBg);
+    color: var(--stPanleText);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-
+    border-radius: 10px;
+    padding: 7px 10px 7px 8px;
 }
 
-#pullerNotification > img{
-    width : 48px;
-    height: 48px;
+#snapTextNotification > img{
+    width : 36px;
+    height: 36px;
     display: inline-block;
     margin-right: 10px;
     filter: none;
@@ -47,18 +58,17 @@
     outline: none;
 }
 
-#pullerNotification > .notification-text-holder h2{
+#snapTextNotification > .notification-text-holder h2{
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 18px;
-    color: #fff;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: normal;
 }
-#pullerNotification > .notification-text-holder span{
+#snapTextNotification > .notification-text-holder span{
     font-size: 12px;
-    color: #928f8f;
     line-height: 14px;
+    opacity: 0.6;
 }
 
 @keyframes pulerNotificationSlideInOut {

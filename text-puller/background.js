@@ -1,5 +1,4 @@
 chrome.commands.onCommand.addListener((command, tab) => {
-    console.log(`Command "${command}" triggered`);
     if (command === 'startSelection'){
         injectContentScripts(tab);
     }
@@ -28,8 +27,6 @@ chrome.runtime.onMessage.addListener(
         }
         if (request.selectedData){
             bse64img = request.selectedData;
-            console.log('slected image', request.selectedData);
-            // textFromImage(request.selectedData)
             return true
         }
     }
@@ -39,9 +36,9 @@ chrome.runtime.onMessage.addListener(
 
 chrome.runtime.onInstalled.addListener(function () {
     chrome.contextMenus.create({
-        "title": 'Copy text',
+        "title": 'SnapText    (Alt+C)',
         "contexts": ["all"],
-        "id": "copyTextPuller"
+        "id": "snapTextBtn"
     });
 });
 

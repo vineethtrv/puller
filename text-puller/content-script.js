@@ -29,12 +29,6 @@
 
             // printFrame();
             textFromImage(croppedImage);
-
-            chrome.runtime.sendMessage({ selectedData: croppedImage },
-                (response) => {
-                    console.log('response', response)
-                });
-
         };
     }
 
@@ -46,11 +40,12 @@
            let textFromBase64 = out.data.text;
             navigator.clipboard.writeText(textFromBase64).then(() => {
                 //clipboard successfully set
-                console.log(textFromBase64)
                 createNotification();
             }, () => {
                 //clipboard write failed, use fallback
             });
+        },error=>{
+            console.log('Text Reg faild : ' , error)
         });
     }
 
@@ -61,7 +56,7 @@
         rectHeight = startY < endY ? (endY - startY) : (startY - endY);
         rectX = startX < endX ? screenX : (screenX - rectWidth);
         rectY = startY < endY ? screenY : (screenY - rectHeight);
-        document.getElementById('puller-selection-box').style.cssText = `
+        document.getElementById('snapText-selection-box').style.cssText = `
             height: ${rectHeight}px;
             width: ${rectWidth}px;
             left: ${rectX}px;
@@ -118,21 +113,20 @@
 
     // Create Notification
     const createNotification = (e) => {
-        const pullerNotificationEl = document.createElement('div');
-        pullerNotificationEl.setAttribute('id', 'pullerNotification');
-        pullerNotificationEl.innerHTML = `
-            <img src="${chrome.runtime.getURL("/assets/icon-128.png")}" />
+        const snapTextNotificationEl = document.createElement('div');
+        snapTextNotificationEl.setAttribute('id', 'snapTextNotification');
+        snapTextNotificationEl.innerHTML = `
+            <img src="${chrome.runtime.getURL("/images/icon-128.png")}" />
             <div class="notification-text-holder">
                 <h2>Text copied to clipboard </h2>
                 <span>Now you can paste the text</span>
-            </div>
-            
+            </div> 
         `;
-        document.querySelector('html').appendChild(pullerNotificationEl);
+        document.querySelector('html').appendChild(snapTextNotificationEl);
         // Remove Notification
         setTimeout(() => {
-            if (pullerNotificationEl){
-                pullerNotificationEl.remove();
+            if (snapTextNotificationEl){
+                // snapTextNotificationEl.remove();
             }
         }, 1600);
     }    
@@ -146,7 +140,7 @@
         SelectionCover.setAttribute('tabindex', 0);
         // Selection box
         const SelectionBox = document.createElement('div');
-        SelectionBox.setAttribute('id', 'puller-selection-box');
+        SelectionBox.setAttribute('id', 'snapText-selection-box');
         SelectionCover.appendChild(SelectionBox);
 
         document.querySelector('html').appendChild(SelectionCover);
