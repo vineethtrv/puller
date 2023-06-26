@@ -26,8 +26,7 @@
             const croppedCtx = croppedCanvas.getContext('2d');
             croppedCtx.putImageData(imageData, (-1 * rectX), (-1 * rectY));
             const croppedImage = croppedCanvas.toDataURL();
-
-            // printFrame();
+            // Generate text from image
             textFromImage(croppedImage);
         };
     }
@@ -36,6 +35,9 @@
 
     //textFromImage
     const textFromImage = (imageData) => {
+
+        console.log('Latest:', imageData)
+
         Tesseract.recognize(imageData).then(out => {
            let textFromBase64 = out.data.text;
             navigator.clipboard.writeText(textFromBase64).then(() => {
@@ -113,6 +115,9 @@
 
     // Create Notification
     const createNotification = (e) => {
+
+
+        
         const snapTextNotificationEl = document.createElement('div');
         snapTextNotificationEl.setAttribute('id', 'snapTextNotification');
         snapTextNotificationEl.innerHTML = `
