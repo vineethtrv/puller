@@ -9,22 +9,21 @@
     const cropImage = (imgDataUrl) => {
         const image = new Image();
         image.src = imgDataUrl;
-
         const canvas = document.createElement('canvas');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         const ctx = canvas.getContext('2d');
+        const dpxr = window.devicePixelRatio;
 
         image.onload = function () {
             ctx.drawImage(image, 0, 0);
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        
             // Crop the image
             const croppedCanvas = document.createElement('canvas');
-            croppedCanvas.width = rectWidth;
-            croppedCanvas.height = rectHeight;
+            croppedCanvas.width = rectWidth * dpxr;
+            croppedCanvas.height = rectHeight * dpxr;
             const croppedCtx = croppedCanvas.getContext('2d');
-            croppedCtx.putImageData(imageData, (-1 * rectX), (-1 * rectY));
+            croppedCtx.putImageData(imageData, (-1 * (rectX * dpxr)), (-1 * (rectY * dpxr)));
             const croppedImage = croppedCanvas.toDataURL();
             // Generate text from image
             textFromImage(croppedImage);
@@ -36,18 +35,20 @@
     //textFromImage
     const textFromImage = (imageData) => {
 
-        console.log('Latest:', imageData)
+        createNotification('loading');
 
         Tesseract.recognize(imageData).then(out => {
            let textFromBase64 = out.data.text;
             navigator.clipboard.writeText(textFromBase64).then(() => {
+                createNotification('success');
                 //clipboard successfully set
-                createNotification();
             }, () => {
                 //clipboard write failed, use fallback
+                createNotification('error');
             });
         },error=>{
-            console.log('Text Reg faild : ' , error)
+            console.log('Text Reg faild : ' , error);
+            createNotification('error');
         });
     }
 
@@ -114,29 +115,58 @@
 
 
     // Create Notification
-    const createNotification = (e) => {
+    const createNotification = (notificationType) => {
+        let snapTextNotificationEl = '';
+        if(document.getElementById('snapTextNotification')){
+            snapTextNotificationEl =  document.getElementById('snapTextNotification');
+        } else {
+            snapTextNotificationEl = document.createElement('div');
+            snapTextNotificationEl.setAttribute('id', 'snapTextNotification');
+            document.querySelector('html').appendChild(snapTextNotificationEl);
+        }
 
 
-        
-        const snapTextNotificationEl = document.createElement('div');
-        snapTextNotificationEl.setAttribute('id', 'snapTextNotification');
-        snapTextNotificationEl.innerHTML = `
-            <img src="${chrome.runtime.getURL("/images/icon-128.png")}" />
-            <div class="notification-text-holder">
-                <h2>Text copied to clipboard </h2>
-                <span>Now you can paste the text</span>
-            </div> 
-        `;
-        document.querySelector('html').appendChild(snapTextNotificationEl);
-        // Remove Notification
-        setTimeout(() => {
-            if (snapTextNotificationEl){
-                // snapTextNotificationEl.remove();
-            }
-        }, 1600);
+        // Notification Type
+        if(notificationType === 'success'){
+            snapTextNotificationEl.innerHTML = `
+                <img src="${chrome.runtime.getURL("/images/icon-128.png")}" />
+                <div class="notification-text-holder">
+                    <h2>Text copied to clipboard </h2>
+                    <span>Now you can paste the text</span>
+                </div> 
+            `;
+            removeNotification(snapTextNotificationEl);
+
+        } else if (notificationType === 'error'){
+            snapTextNotificationEl.innerHTML = `
+                <img src="${chrome.runtime.getURL("/images/error-icon.png")}" />
+                <div class="notification-text-holder">
+                    <h2 class="notification-error-text">Faild to extract text</h2>
+                    <span>Please try again</span>
+                </div> 
+            `;
+            removeNotification(snapTextNotificationEl);
+        } else {
+            // Notification Loader 
+            snapTextNotificationEl.classList.add('slideUp')
+            snapTextNotificationEl.innerHTML = `
+            <div class="snapText-loader-holder">
+                <span class="snapText-loader"></span>
+            </div>
+            `
+        }
     }    
 
 
+    const removeNotification = (snapTextNotificationEl)=>{
+        if (snapTextNotificationEl){
+            snapTextNotificationEl.classList.add('slideDown')
+            // Remove Notification
+            setTimeout(() => {
+                snapTextNotificationEl.remove();
+            }, 1600);
+        }
+    }
 
     // Append selection on DOM 
     (() => {
